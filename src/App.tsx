@@ -1,5 +1,10 @@
 import "./App.css";
+import { Game } from "./components";
 
 export default function App() {
-  return <h1>Tetris</h1>;
+  return (
+    <main>
+      <Game />
+    </main>
+  );
 }

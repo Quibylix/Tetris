@@ -4,7 +4,7 @@ import {
   SHAPES,
   TETRIS_HORIZONTAL_BLOCKS,
   TETRIS_VERTICAL_BLOCKS,
-} from "../constants";
+} from "./constants";
 
 type PIECE_NAME = keyof typeof SHAPES;
 

@@ -1,12 +1,12 @@
 import { useEffect, useRef } from "react";
+import { Board, Piece } from "../../tetris";
 import {
   CANVAS_HEIGHT,
   CANVAS_WIDTH,
   TETRIS_HORIZONTAL_BLOCKS,
   TETRIS_VERTICAL_BLOCKS,
-} from "./constants";
+} from "../../tetris/constants";
 import styles from "./game.module.css";
-import { Board, Piece } from "./logic";
 
 export default function Game() {
   const canvasRef = useRef<HTMLCanvasElement>(null);

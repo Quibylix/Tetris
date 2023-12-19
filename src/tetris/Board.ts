@@ -1,5 +1,5 @@
 import { Piece } from ".";
-import { BLOCK_SIZE, CANVAS_HEIGHT, CANVAS_WIDTH, COLORS } from "../constants";
+import { BLOCK_SIZE, CANVAS_HEIGHT, CANVAS_WIDTH, COLORS } from "./constants";
 
 type PIECE_NAME = keyof typeof COLORS;
 

@@ -1,5 +1,5 @@
-import { COLORS } from "@/components/game/constants";
-import { Board, Piece } from "@/components/game/logic";
+import { Board, Piece } from "@/tetris";
+import { COLORS } from "@/tetris/constants";
 import { describe, expect, it } from "vitest";
 
 describe("Board", () => {

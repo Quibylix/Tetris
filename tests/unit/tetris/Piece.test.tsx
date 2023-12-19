@@ -1,5 +1,5 @@
-import { SHAPES } from "@/components/game/constants";
-import { Piece } from "@/components/game/logic";
+import { Piece } from "@/tetris";
+import { SHAPES } from "@/tetris/constants";
 import { describe, expect, it } from "vitest";
 
 describe("Piece", () => {

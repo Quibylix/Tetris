@@ -34,6 +34,8 @@ export class TetrisGame {
         this.piece.moveDown();
       } else {
         this.board.fixPiece(this.piece);
+        this.board.removeFullRows();
+
         this.piece = new Piece(0, 4, getRandomPieceName());
       }
 

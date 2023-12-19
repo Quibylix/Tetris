@@ -34,6 +34,20 @@ export class Board {
     });
   }
 
+  removeFullRows() {
+    const notFullRows = this.grid.filter(row =>
+      row.some(value => value === null),
+    );
+
+    const fullRowsCount = this.rows - notFullRows.length;
+
+    const newRows = [...Array(fullRowsCount).fill(null)].map(() => [
+      ...Array(this.cols).fill(null),
+    ]);
+
+    this.grid = [...newRows, ...notFullRows];
+  }
+
   draw(ctx: CanvasRenderingContext2D) {
     ctx.fillStyle = "#000";
     ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);

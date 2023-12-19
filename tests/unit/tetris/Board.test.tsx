@@ -37,4 +37,27 @@ describe("Board", () => {
     expect(() => board.fixPiece(piece)).toThrow();
     expect(() => board.fixPiece(piece2)).toThrow();
   });
+
+  it("can clear a row if it is full", () => {
+    const board = new Board(20, 10);
+
+    for (let i = 0; i < 5; i++) {
+      board.fixPiece(new Piece(18, 2 * i, "O"));
+    }
+
+    /*
+    |                     |
+    | O O O O O O O O O O |
+    | O O O O O O O O O O |
+    */
+
+    expect(board.grid[18].every(cell => cell === COLORS.O)).toBe(true);
+    expect(board.grid[19].every(cell => cell === COLORS.O)).toBe(true);
+
+    board.removeFullRows();
+
+    expect(board.grid.every(row => row.every(cell => cell === null))).toBe(
+      true,
+    );
+  });
 });

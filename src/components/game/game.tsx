@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import styles from "./game.module.css";
+import { Board } from "./logic";
 
 const TETRIS_HORIZONTAL_BLOCKS = 10;
 const TETRIS_VERTICAL_BLOCKS = 20;
@@ -21,10 +22,18 @@ export default function Game() {
     ctx.fillStyle = "#000";
     ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
-    for (let x = 0; x < TETRIS_HORIZONTAL_BLOCKS; x++) {
-      for (let y = 0; y < TETRIS_VERTICAL_BLOCKS; y++) {
+    const board = new Board(TETRIS_VERTICAL_BLOCKS, TETRIS_HORIZONTAL_BLOCKS);
+
+    for (let row = 0; row < board.rows; row++) {
+      for (let col = 0; col < board.cols; col++) {
         ctx.strokeStyle = "#fff";
-        ctx.strokeRect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+
+        ctx.strokeRect(
+          col * BLOCK_SIZE,
+          row * BLOCK_SIZE,
+          BLOCK_SIZE,
+          BLOCK_SIZE,
+        );
       }
     }
   }, []);

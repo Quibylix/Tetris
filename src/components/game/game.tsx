@@ -20,6 +20,20 @@ export default function Game() {
     const board = new Board(TETRIS_VERTICAL_BLOCKS, TETRIS_HORIZONTAL_BLOCKS);
     const piece = new Piece(0, 0, "S");
 
+    window.addEventListener("keydown", event => {
+      switch (event.key) {
+        case "ArrowLeft":
+          piece.moveLeft();
+          break;
+        case "ArrowRight":
+          piece.moveRight();
+          break;
+        case "ArrowDown":
+          piece.moveDown();
+          break;
+      }
+    });
+
     let lastSecondTime: number | null;
 
     function main(time: number) {

@@ -30,14 +30,18 @@ export class Piece {
     this.row++;
   }
 
-  moveLeft() {
-    this.col > 0 ? this.col-- : null;
+  moveLeftIfCan(board: Board) {
+    this.col--;
+    if (this.checkCollision(board)) {
+      this.col++;
+    }
   }
 
-  moveRight() {
-    this.col + this.shape[0].length < TETRIS_HORIZONTAL_BLOCKS
-      ? this.col++
-      : null;
+  moveRightIfCan(board: Board) {
+    this.col++;
+    if (this.checkCollision(board)) {
+      this.col--;
+    }
   }
 
   canMoveDown(board: Board) {

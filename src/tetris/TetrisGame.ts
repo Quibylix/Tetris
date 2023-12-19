@@ -51,10 +51,10 @@ export class TetrisGame {
     window.addEventListener("keydown", event => {
       switch (event.key) {
         case "ArrowLeft":
-          this.piece.moveLeft();
+          this.piece.moveLeftIfCan(this.board);
           break;
         case "ArrowRight":
-          this.piece.moveRight();
+          this.piece.moveRightIfCan(this.board);
           break;
         case "ArrowDown":
           this.piece.canMoveDown(this.board) && this.piece.moveDown();

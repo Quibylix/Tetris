@@ -4,6 +4,8 @@ export const BLOCK_SIZE = 32;
 export const CANVAS_WIDTH = TETRIS_HORIZONTAL_BLOCKS * BLOCK_SIZE;
 export const CANVAS_HEIGHT = TETRIS_VERTICAL_BLOCKS * BLOCK_SIZE;
 
+export const PIECES = ["O", "T", "Z", "S", "J", "I", "L"] as const;
+
 export const COLORS = {
   O: "#fbc02d",
   T: "#7b1fa2",

@@ -1,5 +1,6 @@
 import { Board, Piece } from ".";
 import { TETRIS_HORIZONTAL_BLOCKS, TETRIS_VERTICAL_BLOCKS } from "./constants";
+import { getRandomPieceName } from "./helpers";
 
 export class TetrisGame {
   canvas: HTMLCanvasElement;
@@ -13,7 +14,7 @@ export class TetrisGame {
     this.ctx = canvas.getContext("2d");
 
     this.board = new Board(TETRIS_VERTICAL_BLOCKS, TETRIS_HORIZONTAL_BLOCKS);
-    this.piece = new Piece(0, 0, "S");
+    this.piece = new Piece(0, 4, getRandomPieceName());
 
     this.main = this.main.bind(this);
   }
@@ -33,7 +34,7 @@ export class TetrisGame {
         this.piece.moveDown();
       } else {
         this.board.fixPiece(this.piece);
-        this.piece = new Piece(0, 0, "S");
+        this.piece = new Piece(0, 4, getRandomPieceName());
       }
 
       this.lastSecondTime = time;

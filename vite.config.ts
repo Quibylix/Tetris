@@ -10,6 +10,7 @@ export default defineConfig({
     port: 3000,
   },
   test: {
+    setupFiles: ["vitest-canvas-mock"],
     globals: true,
     environment: "jsdom",
   },

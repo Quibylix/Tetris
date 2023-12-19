@@ -1,6 +1,6 @@
+import { TetrisGame } from "@/tetris";
+import { CANVAS_HEIGHT, CANVAS_WIDTH } from "@/tetris/constants";
 import { useEffect, useRef } from "react";
-import { TetrisGame } from "../../tetris";
-import { CANVAS_HEIGHT, CANVAS_WIDTH } from "../../tetris/constants";
 import styles from "./game.module.css";
 
 export default function Game() {

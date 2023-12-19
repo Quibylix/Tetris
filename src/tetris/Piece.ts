@@ -1,3 +1,4 @@
+import { Board } from ".";
 import {
   BLOCK_SIZE,
   COLORS,
@@ -21,8 +22,12 @@ export class Piece {
     this.shape = SHAPES[name];
   }
 
+  moveUp() {
+    this.row--;
+  }
+
   moveDown() {
-    this.row + this.shape.length < TETRIS_VERTICAL_BLOCKS ? this.row++ : null;
+    this.row++;
   }
 
   moveLeft() {
@@ -33,6 +38,38 @@ export class Piece {
     this.col + this.shape[0].length < TETRIS_HORIZONTAL_BLOCKS
       ? this.col++
       : null;
+  }
+
+  canMoveDown(board: Board) {
+    this.moveDown();
+    if (this.checkCollision(board)) {
+      this.moveUp();
+      return false;
+    }
+
+    this.moveUp();
+    return true;
+  }
+
+  checkCollision(board: Board) {
+    return this.shape.some((row, rowIndex) => {
+      return row.some((value, colIndex) => {
+        if (value > 0) {
+          const x = colIndex + this.col;
+          const y = rowIndex + this.row;
+
+          return (
+            x < 0 ||
+            x >= TETRIS_HORIZONTAL_BLOCKS ||
+            y < 0 ||
+            y >= TETRIS_VERTICAL_BLOCKS ||
+            board.grid[y][x] !== null
+          );
+        }
+
+        return false;
+      });
+    });
   }
 
   draw(ctx: CanvasRenderingContext2D) {

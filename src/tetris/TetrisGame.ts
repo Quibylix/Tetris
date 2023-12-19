@@ -28,8 +28,13 @@ export class TetrisGame {
     this.lastSecondTime ?? (this.lastSecondTime = time);
     const delta = time - this.lastSecondTime;
 
-    if (delta > 200) {
-      this.piece.moveDown();
+    if (delta > 1000) {
+      if (this.piece.canMoveDown(this.board)) {
+        this.piece.moveDown();
+      } else {
+        this.board.fixPiece(this.piece);
+        this.piece = new Piece(0, 0, "S");
+      }
 
       this.lastSecondTime = time;
     }
@@ -52,7 +57,7 @@ export class TetrisGame {
           this.piece.moveRight();
           break;
         case "ArrowDown":
-          this.piece.moveDown();
+          this.piece.canMoveDown(this.board) && this.piece.moveDown();
           break;
       }
     });

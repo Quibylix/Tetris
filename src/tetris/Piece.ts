@@ -6,7 +6,7 @@ import {
   TETRIS_HORIZONTAL_BLOCKS,
   TETRIS_VERTICAL_BLOCKS,
 } from "./constants";
-import { rotateMatrix } from "./helpers";
+import { drawRectWithBorder, rotateMatrix } from "./helpers";
 
 type PIECE_NAME = keyof typeof SHAPES;
 
@@ -108,24 +108,15 @@ export class Piece {
   draw(ctx: CanvasRenderingContext2D) {
     this.shape.forEach((row, rowIndex) => {
       row.forEach((value, colIndex) => {
-        if (value > 0) {
-          ctx.fillStyle = this.color;
-          ctx.strokeStyle = "#fff";
-
-          ctx.fillRect(
-            (colIndex + this.col) * BLOCK_SIZE,
-            (rowIndex + this.row) * BLOCK_SIZE,
-            BLOCK_SIZE,
-            BLOCK_SIZE,
-          );
-
-          ctx.strokeRect(
-            (colIndex + this.col) * BLOCK_SIZE,
-            (rowIndex + this.row) * BLOCK_SIZE,
-            BLOCK_SIZE,
-            BLOCK_SIZE,
-          );
-        }
+        value &&
+          drawRectWithBorder(ctx, {
+            x: (colIndex + this.col) * BLOCK_SIZE,
+            y: (rowIndex + this.row) * BLOCK_SIZE,
+            width: BLOCK_SIZE,
+            height: BLOCK_SIZE,
+            fillStyle: this.color,
+            strokeStyle: "#fff",
+          });
       });
     });
   }

@@ -1,5 +1,6 @@
 import { Piece } from ".";
-import { BLOCK_SIZE, CANVAS_HEIGHT, CANVAS_WIDTH, COLORS } from "./constants";
+import { BLOCK_SIZE, COLORS } from "./constants";
+import { drawRectWithBorder } from "./helpers";
 
 type PIECE_NAME = keyof typeof COLORS;
 
@@ -49,31 +50,17 @@ export class Board {
   }
 
   draw(ctx: CanvasRenderingContext2D) {
-    ctx.fillStyle = "#000";
-    ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-
-    for (let row = 0; row < this.rows; row++) {
-      for (let col = 0; col < this.cols; col++) {
-        const color = this.grid[row][col];
-
-        if (color) {
-          ctx.fillStyle = color;
-          ctx.fillRect(
-            col * BLOCK_SIZE,
-            row * BLOCK_SIZE,
-            BLOCK_SIZE,
-            BLOCK_SIZE,
-          );
-        }
-
-        ctx.strokeStyle = "#fff";
-        ctx.strokeRect(
-          col * BLOCK_SIZE,
-          row * BLOCK_SIZE,
-          BLOCK_SIZE,
-          BLOCK_SIZE,
-        );
-      }
-    }
+    this.grid.forEach((row, rowIndex) => {
+      row.forEach((color, colIndex) => {
+        drawRectWithBorder(ctx, {
+          x: colIndex * BLOCK_SIZE,
+          y: rowIndex * BLOCK_SIZE,
+          width: BLOCK_SIZE,
+          height: BLOCK_SIZE,
+          fillStyle: color ?? "#000",
+          strokeStyle: "#fff",
+        });
+      });
+    });
   }
 }

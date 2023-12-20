@@ -20,3 +20,23 @@ export function rotateMatrix(matrix: number[][], clockwise = true) {
 
   return newMatrix;
 }
+
+type RectInfo = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  fillStyle: string;
+  strokeStyle: string;
+};
+
+export function drawRectWithBorder(
+  ctx: CanvasRenderingContext2D,
+  { x, y, width, height, fillStyle, strokeStyle }: RectInfo,
+) {
+  ctx.fillStyle = fillStyle;
+  ctx.fillRect(x, y, width, height);
+
+  ctx.strokeStyle = strokeStyle;
+  ctx.strokeRect(x, y, width, height);
+}

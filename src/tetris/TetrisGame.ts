@@ -26,7 +26,8 @@ export class TetrisGame {
   run() {
     requestAnimationFrame(this.main);
 
-    this.setupKeyboardControls();
+    this.setupKeydownControls();
+    this.setupKeyupControls();
   }
 
   main(time: number) {
@@ -65,15 +66,12 @@ export class TetrisGame {
       this.lastEventTime = time;
     }
 
-    if (!this.ctx) return;
-
-    this.board.draw(this.ctx);
-    this.piece.draw(this.ctx);
+    this.draw();
 
     requestAnimationFrame(this.main);
   }
 
-  setupKeyboardControls() {
+  setupKeydownControls() {
     window.addEventListener("keydown", event => {
       if (event.repeat) return;
 
@@ -97,20 +95,29 @@ export class TetrisGame {
           this.piece.rotateIfCan(this.board);
           break;
       }
-
-      window.addEventListener("keyup", event => {
-        switch (event.key) {
-          case "ArrowLeft":
-            this.isMovingLeft = false;
-            break;
-          case "ArrowRight":
-            this.isMovingRight = false;
-            break;
-          case "ArrowDown":
-            this.isMovingDown = false;
-            break;
-        }
-      });
     });
+  }
+
+  setupKeyupControls() {
+    window.addEventListener("keyup", event => {
+      switch (event.key) {
+        case "ArrowLeft":
+          this.isMovingLeft = false;
+          break;
+        case "ArrowRight":
+          this.isMovingRight = false;
+          break;
+        case "ArrowDown":
+          this.isMovingDown = false;
+          break;
+      }
+    });
+  }
+
+  draw() {
+    if (!this.ctx) return;
+
+    this.board.draw(this.ctx);
+    this.piece.draw(this.ctx);
   }
 }

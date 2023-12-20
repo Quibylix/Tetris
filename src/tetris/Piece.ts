@@ -6,6 +6,7 @@ import {
   TETRIS_HORIZONTAL_BLOCKS,
   TETRIS_VERTICAL_BLOCKS,
 } from "./constants";
+import { rotateMatrix } from "./helpers";
 
 type PIECE_NAME = keyof typeof SHAPES;
 
@@ -13,13 +14,13 @@ export class Piece {
   row: number;
   col: number;
   color: (typeof COLORS)[PIECE_NAME];
-  shape: (typeof SHAPES)[PIECE_NAME];
+  shape: number[][];
 
   constructor(row: number, col: number, name: PIECE_NAME) {
     this.row = row;
     this.col = col;
     this.color = COLORS[name];
-    this.shape = SHAPES[name];
+    this.shape = SHAPES[name].map(row => [...row]);
   }
 
   moveUp() {
@@ -53,6 +54,34 @@ export class Piece {
 
     this.moveUp();
     return true;
+  }
+
+  rotateIfCan(board: Board) {
+    this.shape = rotateMatrix(this.shape);
+
+    const shapeLeft = Math.min(...this.shape.map(row => row.indexOf(1)));
+    const shapeRight =
+      Math.max(...this.shape.map(row => row.lastIndexOf(1))) + 1;
+
+    const distanceToLeft = shapeLeft + this.col;
+    const distanceToRight = TETRIS_HORIZONTAL_BLOCKS - (shapeRight + this.col);
+
+    // If distance is negative the piece is out of the board
+    if (distanceToLeft < 0) {
+      this.col -= distanceToLeft;
+    } else if (distanceToRight < 0) {
+      this.col += distanceToRight;
+    }
+
+    if (this.checkCollision(board)) {
+      if (distanceToLeft < 0) {
+        this.col += distanceToLeft;
+      } else if (distanceToRight < 0) {
+        this.col -= distanceToRight;
+      }
+
+      this.shape = rotateMatrix(this.shape, false);
+    }
   }
 
   checkCollision(board: Board) {

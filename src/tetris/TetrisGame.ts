@@ -93,6 +93,9 @@ export class TetrisGame {
           this.piece.canMoveDown(this.board) && this.piece.moveDown();
           this.lastEventTime = null;
           break;
+        case "ArrowUp":
+          this.piece.rotateIfCan(this.board);
+          break;
       }
 
       window.addEventListener("keyup", event => {

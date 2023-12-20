@@ -1,5 +1,6 @@
 import { Board, Piece } from "@/tetris";
 import { SHAPES } from "@/tetris/constants";
+import { rotateMatrix } from "@/tetris/helpers";
 import { describe, expect, it } from "vitest";
 
 describe("Piece", () => {
@@ -132,5 +133,62 @@ describe("Piece", () => {
 
     expect(piece.row).toBe(1);
     expect(piece.col).toBe(1);
+  });
+
+  it("can rotate", () => {
+    const testBoard = new Board(20, 10);
+    const piece = new Piece(2, 3, "S");
+
+    piece.rotateIfCan(testBoard);
+
+    expect(piece.shape).toEqual(
+      rotateMatrix(SHAPES.S as unknown as number[][]),
+    );
+  });
+
+  it("if it collides with a fixed piece, it doesn't rotate", () => {
+    const testBoard = new Board(20, 10);
+    const fixedPiece = new Piece(1, 1, "T");
+
+    testBoard.fixPiece(fixedPiece);
+
+    const piece = new Piece(1, 3, "Z");
+
+    piece.rotateIfCan(testBoard);
+
+    /*
+    |                     |          |                     |
+    |     T Z Z           |          |     T   Z           |
+    |   T T T Z Z         |    ->    |   T T × Z           |
+    |                     |          |       Z             |
+    |                     |          |                     |
+    */
+
+    expect(piece.shape).toEqual(SHAPES.Z);
+  });
+
+  it("can rotate even if it collides with the right or left wall, it moves right or left respectively", () => {
+    const testBoard = new Board(20, 10);
+    const piece = new Piece(1, 6, "I");
+
+    // Prepare the board
+    piece.rotateIfCan(testBoard);
+    piece.moveRightIfCan(testBoard);
+    piece.moveRightIfCan(testBoard);
+    piece.moveRightIfCan(testBoard);
+
+    /*
+    |                     |          |                     |               |                     |
+    |                   I |          |                   I | I I I         |             I I I I |
+    |                   I |    ->    |                     |         ->    |                     |
+    |                   I |          |                     |               |                     |
+    |                   I |          |                     |               |                     |
+    |                     |          |                     |               |                     |
+    */
+
+    piece.rotateIfCan(testBoard);
+
+    expect(piece.col).toBe(6);
+    expect(piece.shape).toEqual(SHAPES.I);
   });
 });

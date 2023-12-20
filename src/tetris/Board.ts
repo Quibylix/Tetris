@@ -3,11 +3,12 @@ import { BLOCK_SIZE, COLORS } from "./constants";
 import { drawRectWithBorder } from "./helpers";
 
 type PIECE_NAME = keyof typeof COLORS;
+type GRID_VALUE = (typeof COLORS)[PIECE_NAME] | null;
 
 export class Board {
   rows: number;
   cols: number;
-  grid: ((typeof COLORS)[PIECE_NAME] | null)[][] = [];
+  grid: GRID_VALUE[][] = [];
 
   constructor(rows: number, cols: number) {
     this.rows = rows;

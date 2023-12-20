@@ -7,7 +7,11 @@ export class TetrisGame {
   ctx: CanvasRenderingContext2D | null;
   board: Board;
   piece: Piece;
-  lastSecondTime: number | null = null;
+  lastPieceTime: number | null = null;
+  lastEventTime: number | null = null;
+  isMovingDown = false;
+  isMovingLeft = false;
+  isMovingRight = false;
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
@@ -26,10 +30,13 @@ export class TetrisGame {
   }
 
   main(time: number) {
-    this.lastSecondTime ?? (this.lastSecondTime = time);
-    const delta = time - this.lastSecondTime;
+    this.lastPieceTime ?? (this.lastPieceTime = time);
+    this.lastEventTime ?? (this.lastEventTime = time);
 
-    if (delta > 1000) {
+    const pieceDelta = time - this.lastPieceTime;
+    const eventDelta = time - this.lastEventTime;
+
+    if (pieceDelta > 1000) {
       if (this.piece.canMoveDown(this.board)) {
         this.piece.moveDown();
       } else {
@@ -39,7 +46,23 @@ export class TetrisGame {
         this.piece = new Piece(0, 4, getRandomPieceName());
       }
 
-      this.lastSecondTime = time;
+      this.lastPieceTime = time;
+    }
+
+    if (eventDelta > 110) {
+      if (this.isMovingLeft) {
+        this.piece.moveLeftIfCan(this.board);
+      }
+
+      if (this.isMovingRight) {
+        this.piece.moveRightIfCan(this.board);
+      }
+
+      if (this.isMovingDown) {
+        this.piece.canMoveDown(this.board) && this.piece.moveDown();
+      }
+
+      this.lastEventTime = time;
     }
 
     if (!this.ctx) return;
@@ -52,17 +75,39 @@ export class TetrisGame {
 
   setupKeyboardControls() {
     window.addEventListener("keydown", event => {
+      if (event.repeat) return;
+
       switch (event.key) {
         case "ArrowLeft":
+          this.isMovingLeft = true;
           this.piece.moveLeftIfCan(this.board);
+          this.lastEventTime = null;
           break;
         case "ArrowRight":
+          this.isMovingRight = true;
           this.piece.moveRightIfCan(this.board);
+          this.lastEventTime = null;
           break;
         case "ArrowDown":
+          this.isMovingDown = true;
           this.piece.canMoveDown(this.board) && this.piece.moveDown();
+          this.lastEventTime = null;
           break;
       }
+
+      window.addEventListener("keyup", event => {
+        switch (event.key) {
+          case "ArrowLeft":
+            this.isMovingLeft = false;
+            break;
+          case "ArrowRight":
+            this.isMovingRight = false;
+            break;
+          case "ArrowDown":
+            this.isMovingDown = false;
+            break;
+        }
+      });
     });
   }
 }

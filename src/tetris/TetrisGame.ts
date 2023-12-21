@@ -128,7 +128,16 @@ export class TetrisGame {
     }
 
     this.board.fixPiece(this.piece);
-    this.board.removeFullRows();
+    const fullRowsCount = this.board.removeFullRows();
+
+    if (fullRowsCount > 0) {
+      this.gravityInterval.interval = Math.floor(
+        this.gravityInterval.interval * 0.95,
+      );
+      this.movementInterval.interval = Math.floor(
+        this.movementInterval.interval * 0.98,
+      );
+    }
 
     this.piece = new Piece(0, 4, getRandomPieceName());
 

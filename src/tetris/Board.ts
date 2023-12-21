@@ -48,6 +48,8 @@ export class Board {
     ]);
 
     this.grid = [...newRows, ...notFullRows];
+
+    return fullRowsCount;
   }
 
   draw(ctx: CanvasRenderingContext2D) {

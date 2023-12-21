@@ -1,4 +1,4 @@
-import { Board, Piece } from ".";
+import { AnimationInterval, Board, Piece } from ".";
 import { TETRIS_HORIZONTAL_BLOCKS, TETRIS_VERTICAL_BLOCKS } from "./constants";
 import { getRandomPieceName } from "./helpers";
 
@@ -7,20 +7,28 @@ export class TetrisGame {
   ctx: CanvasRenderingContext2D | null;
   board: Board;
   piece: Piece;
-  lastPieceTime: number | null = null;
-  lastEventTime: number | null = null;
+  movementInterval: AnimationInterval;
+  gravityInterval: AnimationInterval;
   isMovingDown = false;
   isMovingLeft = false;
   isMovingRight = false;
 
   constructor(canvas: HTMLCanvasElement) {
+    this.main = this.main.bind(this);
+    this.handlePieceMovement = this.handlePieceMovement.bind(this);
+    this.handleGravity = this.handleGravity.bind(this);
+
     this.canvas = canvas;
     this.ctx = canvas.getContext("2d");
 
     this.board = new Board(TETRIS_VERTICAL_BLOCKS, TETRIS_HORIZONTAL_BLOCKS);
     this.piece = new Piece(0, 4, getRandomPieceName());
 
-    this.main = this.main.bind(this);
+    this.movementInterval = new AnimationInterval(
+      this.handlePieceMovement,
+      110,
+    );
+    this.gravityInterval = new AnimationInterval(this.handleGravity, 1000);
   }
 
   run() {
@@ -31,40 +39,8 @@ export class TetrisGame {
   }
 
   main(time: number) {
-    this.lastPieceTime ?? (this.lastPieceTime = time);
-    this.lastEventTime ?? (this.lastEventTime = time);
-
-    const pieceDelta = time - this.lastPieceTime;
-    const eventDelta = time - this.lastEventTime;
-
-    if (pieceDelta > 1000) {
-      if (this.piece.canMoveDown(this.board)) {
-        this.piece.moveDown();
-      } else {
-        this.board.fixPiece(this.piece);
-        this.board.removeFullRows();
-
-        this.piece = new Piece(0, 4, getRandomPieceName());
-      }
-
-      this.lastPieceTime = time;
-    }
-
-    if (eventDelta > 110) {
-      if (this.isMovingLeft) {
-        this.piece.moveLeftIfCan(this.board);
-      }
-
-      if (this.isMovingRight) {
-        this.piece.moveRightIfCan(this.board);
-      }
-
-      if (this.isMovingDown) {
-        this.piece.canMoveDown(this.board) && this.piece.moveDown();
-      }
-
-      this.lastEventTime = time;
-    }
+    this.gravityInterval.run(time);
+    this.movementInterval.run(time);
 
     this.draw();
 
@@ -79,17 +55,17 @@ export class TetrisGame {
         case "ArrowLeft":
           this.isMovingLeft = true;
           this.piece.moveLeftIfCan(this.board);
-          this.lastEventTime = null;
+          this.movementInterval.reset();
           break;
         case "ArrowRight":
           this.isMovingRight = true;
           this.piece.moveRightIfCan(this.board);
-          this.lastEventTime = null;
+          this.movementInterval.reset();
           break;
         case "ArrowDown":
           this.isMovingDown = true;
           this.piece.canMoveDown(this.board) && this.piece.moveDown();
-          this.lastEventTime = null;
+          this.movementInterval.reset();
           break;
         case "ArrowUp":
           this.piece.rotateIfCan(this.board);
@@ -119,5 +95,31 @@ export class TetrisGame {
 
     this.board.draw(this.ctx);
     this.piece.draw(this.ctx);
+  }
+
+  handleGravity() {
+    if (this.piece.canMoveDown(this.board)) {
+      this.piece.moveDown();
+      return;
+    }
+
+    this.board.fixPiece(this.piece);
+    this.board.removeFullRows();
+
+    this.piece = new Piece(0, 4, getRandomPieceName());
+  }
+
+  handlePieceMovement() {
+    if (this.isMovingLeft) {
+      this.piece.moveLeftIfCan(this.board);
+    }
+
+    if (this.isMovingRight) {
+      this.piece.moveRightIfCan(this.board);
+    }
+
+    if (this.isMovingDown) {
+      this.piece.canMoveDown(this.board) && this.piece.moveDown();
+    }
   }
 }

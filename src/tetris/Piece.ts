@@ -59,12 +59,9 @@ export class Piece {
   rotateIfCan(board: Board) {
     this.shape = rotateMatrix(this.shape);
 
-    const shapeLeft = Math.min(...this.shape.map(row => row.indexOf(1)));
-    const shapeRight =
-      Math.max(...this.shape.map(row => row.lastIndexOf(1))) + 1;
-
-    const distanceToLeft = shapeLeft + this.col;
-    const distanceToRight = TETRIS_HORIZONTAL_BLOCKS - (shapeRight + this.col);
+    const distanceToLeft = this.col;
+    const distanceToRight =
+      TETRIS_HORIZONTAL_BLOCKS - (this.shape[0].length + this.col);
 
     // If distance is negative the piece is out of the board
     if (distanceToLeft < 0) {

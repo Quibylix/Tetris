@@ -148,7 +148,7 @@ describe("Piece", () => {
 
   it("if it collides with a fixed piece, it doesn't rotate", () => {
     const testBoard = new Board(20, 10);
-    const fixedPiece = new Piece(1, 1, "T");
+    const fixedPiece = new Piece(2, 2, "T");
 
     testBoard.fixPiece(fixedPiece);
 
@@ -158,9 +158,9 @@ describe("Piece", () => {
 
     /*
     |                     |          |                     |
-    |     T Z Z           |          |     T   Z           |
-    |   T T T Z Z         |    ->    |   T T × Z           |
-    |                     |          |       Z             |
+    |       Z Z           |          |           Z         |
+    |       T Z Z         |    ->    |       T Z Z         |
+    |     T T T           |          |     T T ×           |
     |                     |          |                     |
     */
 
@@ -173,8 +173,6 @@ describe("Piece", () => {
 
     // Prepare the board
     piece.rotateIfCan(testBoard);
-    piece.moveRightIfCan(testBoard);
-    piece.moveRightIfCan(testBoard);
     piece.moveRightIfCan(testBoard);
 
     /*
@@ -189,6 +187,8 @@ describe("Piece", () => {
     piece.rotateIfCan(testBoard);
 
     expect(piece.col).toBe(6);
-    expect(piece.shape).toEqual(SHAPES.I);
+    expect(piece.shape).toEqual(
+      rotateMatrix(rotateMatrix(SHAPES.I as unknown as number[][])),
+    );
   });
 });

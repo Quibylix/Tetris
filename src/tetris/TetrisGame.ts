@@ -1,5 +1,10 @@
 import { AnimationInterval, Board, Piece } from ".";
-import { TETRIS_HORIZONTAL_BLOCKS, TETRIS_VERTICAL_BLOCKS } from "./constants";
+import {
+  CANVAS_HEIGHT,
+  CANVAS_WIDTH,
+  TETRIS_HORIZONTAL_BLOCKS,
+  TETRIS_VERTICAL_BLOCKS,
+} from "./constants";
 import { getRandomPieceName } from "./helpers";
 
 export class TetrisGame {
@@ -12,6 +17,7 @@ export class TetrisGame {
   isMovingDown = false;
   isMovingLeft = false;
   isMovingRight = false;
+  isGameOver = false;
 
   constructor(canvas: HTMLCanvasElement) {
     this.main = this.main.bind(this);
@@ -39,8 +45,10 @@ export class TetrisGame {
   }
 
   main(time: number) {
-    this.gravityInterval.run(time);
-    this.movementInterval.run(time);
+    if (!this.isGameOver) {
+      this.gravityInterval.run(time);
+      this.movementInterval.run(time);
+    }
 
     this.draw();
 
@@ -93,6 +101,22 @@ export class TetrisGame {
   draw() {
     if (!this.ctx) return;
 
+    if (this.isGameOver) {
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+      this.ctx.font = "bold 30px Arial";
+      this.ctx.fillStyle = "red";
+      this.ctx.textAlign = "center";
+      this.ctx.textBaseline = "middle";
+
+      const centerX = CANVAS_WIDTH / 2;
+      const centerY = CANVAS_HEIGHT / 2;
+
+      this.ctx.fillText("Game Over", centerX, centerY);
+
+      return;
+    }
+
     this.board.draw(this.ctx);
     this.piece.draw(this.ctx);
   }
@@ -107,6 +131,10 @@ export class TetrisGame {
     this.board.removeFullRows();
 
     this.piece = new Piece(0, 4, getRandomPieceName());
+
+    if (this.piece.checkCollision(this.board)) {
+      this.gameOver();
+    }
   }
 
   handlePieceMovement() {
@@ -121,5 +149,12 @@ export class TetrisGame {
     if (this.isMovingDown) {
       this.piece.canMoveDown(this.board) && this.piece.moveDown();
     }
+  }
+
+  gameOver() {
+    this.isGameOver = true;
+
+    this.gravityInterval.reset();
+    this.movementInterval.reset();
   }
 }

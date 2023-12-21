@@ -53,3 +53,5 @@ export const SHAPES = {
     [0, 0, 0, 0],
   ],
 } as const;
+
+export const MAX_LEVEL = 10;

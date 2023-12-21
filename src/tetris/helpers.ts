@@ -1,4 +1,4 @@
-import { PIECES } from "./constants";
+import { MAX_LEVEL, PIECES } from "./constants";
 
 export function getRandomPieceName() {
   const name = PIECES[Math.floor(Math.random() * PIECES.length)];
@@ -39,4 +39,8 @@ export function drawRectWithBorder(
 
   ctx.strokeStyle = strokeStyle;
   ctx.strokeRect(x, y, width, height);
+}
+
+export function getLevel(fullRowsCount: number) {
+  return Math.min(MAX_LEVEL, Math.floor(fullRowsCount / 8) + 1);
 }

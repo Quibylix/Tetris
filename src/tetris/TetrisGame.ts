@@ -5,7 +5,7 @@ import {
   TETRIS_HORIZONTAL_BLOCKS,
   TETRIS_VERTICAL_BLOCKS,
 } from "./constants";
-import { getRandomPieceName } from "./helpers";
+import { getLevel, getRandomPieceName } from "./helpers";
 
 export class TetrisGame {
   canvas: HTMLCanvasElement;
@@ -18,6 +18,8 @@ export class TetrisGame {
   isMovingLeft = false;
   isMovingRight = false;
   isGameOver = false;
+  fullRowsCount = 0;
+  level = 1;
 
   constructor(canvas: HTMLCanvasElement) {
     this.main = this.main.bind(this);
@@ -34,7 +36,7 @@ export class TetrisGame {
       this.handlePieceMovement,
       110,
     );
-    this.gravityInterval = new AnimationInterval(this.handleGravity, 1000);
+    this.gravityInterval = new AnimationInterval(this.handleGravity, 470);
   }
 
   run() {
@@ -119,6 +121,13 @@ export class TetrisGame {
 
     this.board.draw(this.ctx);
     this.piece.draw(this.ctx);
+
+    this.ctx.font = "bold 20px Arial";
+    this.ctx.fillStyle = "#fff";
+    this.ctx.textAlign = "left";
+    this.ctx.textBaseline = "top";
+    this.ctx.fillText(`Level: ${this.level}`, 10, 10);
+    this.ctx.fillText(`Rows: ${this.fullRowsCount}`, 10, 40);
   }
 
   handleGravity() {
@@ -128,22 +137,27 @@ export class TetrisGame {
     }
 
     this.board.fixPiece(this.piece);
-    const fullRowsCount = this.board.removeFullRows();
+    this.fullRowsCount += this.board.removeFullRows();
 
-    if (fullRowsCount > 0) {
-      this.gravityInterval.interval = Math.floor(
-        this.gravityInterval.interval * 0.95,
-      );
-      this.movementInterval.interval = Math.floor(
-        this.movementInterval.interval * 0.98,
-      );
-    }
+    const newLevel = getLevel(this.fullRowsCount);
+    if (newLevel !== this.level) this.updateLevel(newLevel);
 
     this.piece = new Piece(0, 4, getRandomPieceName());
 
     if (this.piece.checkCollision(this.board)) {
       this.gameOver();
     }
+  }
+
+  updateLevel(level: number) {
+    this.level = level;
+
+    this.gravityInterval.interval = Math.floor(
+      470 * Math.pow(0.88, 2 * level - 1),
+    );
+    this.movementInterval.interval = Math.floor(
+      110 * Math.pow(0.96, 2 * level - 1),
+    );
   }
 
   handlePieceMovement() {

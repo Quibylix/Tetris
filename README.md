@@ -16,11 +16,9 @@ This is a Tetris clone built with Vite, React and TypeScript.
 - React
 - HTML Canvas
 
-<!--
 ## Preview
 
-![Tetris Clone Preview](./preview.png)
--->
+![Tetris Clone Preview](https://github.com/Quibylix/Tetris/assets/146129779/aac6f8b2-a57c-442e-9ade-a5daf49c6f55)
 
 ## Contributing
 

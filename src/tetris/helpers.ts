@@ -28,16 +28,18 @@ type RectInfo = {
   height: number;
   fillStyle: string;
   strokeStyle: string;
+  lineWidth?: number;
 };
 
 export function drawRectWithBorder(
   ctx: CanvasRenderingContext2D,
-  { x, y, width, height, fillStyle, strokeStyle }: RectInfo,
+  { x, y, width, height, fillStyle, strokeStyle, lineWidth = 1 }: RectInfo,
 ) {
   ctx.fillStyle = fillStyle;
   ctx.fillRect(x, y, width, height);
 
   ctx.strokeStyle = strokeStyle;
+  ctx.lineWidth = lineWidth;
   ctx.strokeRect(x, y, width, height);
 }
 

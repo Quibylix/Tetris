@@ -193,4 +193,18 @@ describe("Piece", () => {
       rotateMatrix(rotateMatrix(SHAPES.I as unknown as number[][])),
     );
   });
+
+  it("allows to calculate the final position of the piece", () => {
+    const testBoard = new Board(20, 10);
+
+    const piece = new Piece(1, 1, "T", testBoard);
+
+    expect(piece.getFinalRow()).toEqual(18);
+
+    const fixedPiece = new Piece(18, 1, "O", testBoard);
+
+    testBoard.fixPiece(fixedPiece);
+
+    expect(piece.getFinalRow()).toEqual(16);
+  });
 });

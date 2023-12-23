@@ -83,6 +83,20 @@ export class Piece {
     }
   }
 
+  getFinalRow() {
+    const initialRow = this.row;
+
+    while (this.canMoveDown()) {
+      this.moveDown();
+    }
+
+    const finalRow = this.row;
+
+    this.row = initialRow;
+
+    return finalRow;
+  }
+
   checkCollision() {
     return this.shape.some((row, rowIndex) => {
       return row.some((value, colIndex) => {
@@ -107,15 +121,27 @@ export class Piece {
   draw(ctx: CanvasRenderingContext2D) {
     this.shape.forEach((row, rowIndex) => {
       row.forEach((value, colIndex) => {
-        value &&
-          drawRectWithBorder(ctx, {
-            x: (colIndex + this.col) * BLOCK_SIZE,
-            y: (rowIndex + this.row) * BLOCK_SIZE,
-            width: BLOCK_SIZE,
-            height: BLOCK_SIZE,
-            fillStyle: this.color,
-            strokeStyle: "#fff",
-          });
+        if (!value) return;
+
+        const finalRow = this.getFinalRow();
+        drawRectWithBorder(ctx, {
+          x: (colIndex + this.col) * BLOCK_SIZE,
+          y: (rowIndex + finalRow) * BLOCK_SIZE,
+          width: BLOCK_SIZE,
+          height: BLOCK_SIZE,
+          fillStyle: `${this.color}77`,
+          strokeStyle: this.color,
+          lineWidth: 2,
+        });
+
+        drawRectWithBorder(ctx, {
+          x: (colIndex + this.col) * BLOCK_SIZE,
+          y: (rowIndex + this.row) * BLOCK_SIZE,
+          width: BLOCK_SIZE,
+          height: BLOCK_SIZE,
+          fillStyle: this.color,
+          strokeStyle: "#fff",
+        });
       });
     });
   }

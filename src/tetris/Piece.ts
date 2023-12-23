@@ -15,12 +15,14 @@ export class Piece {
   col: number;
   color: (typeof COLORS)[PIECE_NAME];
   shape: number[][];
+  board: Board;
 
-  constructor(row: number, col: number, name: PIECE_NAME) {
+  constructor(row: number, col: number, name: PIECE_NAME, board: Board) {
     this.row = row;
     this.col = col;
     this.color = COLORS[name];
     this.shape = SHAPES[name].map(row => [...row]);
+    this.board = board;
   }
 
   moveUp() {
@@ -31,23 +33,23 @@ export class Piece {
     this.row++;
   }
 
-  moveLeftIfCan(board: Board) {
+  moveLeftIfCan() {
     this.col--;
-    if (this.checkCollision(board)) {
+    if (this.checkCollision()) {
       this.col++;
     }
   }
 
-  moveRightIfCan(board: Board) {
+  moveRightIfCan() {
     this.col++;
-    if (this.checkCollision(board)) {
+    if (this.checkCollision()) {
       this.col--;
     }
   }
 
-  canMoveDown(board: Board) {
+  canMoveDown() {
     this.moveDown();
-    if (this.checkCollision(board)) {
+    if (this.checkCollision()) {
       this.moveUp();
       return false;
     }
@@ -56,7 +58,7 @@ export class Piece {
     return true;
   }
 
-  rotateIfCan(board: Board) {
+  rotateIfCan() {
     this.shape = rotateMatrix(this.shape);
 
     const distanceToLeft = this.col;
@@ -70,7 +72,7 @@ export class Piece {
       this.col += distanceToRight;
     }
 
-    if (this.checkCollision(board)) {
+    if (this.checkCollision()) {
       if (distanceToLeft < 0) {
         this.col += distanceToLeft;
       } else if (distanceToRight < 0) {
@@ -81,7 +83,7 @@ export class Piece {
     }
   }
 
-  checkCollision(board: Board) {
+  checkCollision() {
     return this.shape.some((row, rowIndex) => {
       return row.some((value, colIndex) => {
         if (value > 0) {
@@ -93,7 +95,7 @@ export class Piece {
             x >= TETRIS_HORIZONTAL_BLOCKS ||
             y < 0 ||
             y >= TETRIS_VERTICAL_BLOCKS ||
-            board.grid[y][x] !== null
+            this.board.grid[y][x] !== null
           );
         }
 

@@ -5,7 +5,8 @@ import { describe, expect, it } from "vitest";
 
 describe("Piece", () => {
   it("accepts a position and a shape", () => {
-    const piece = new Piece(2, 3, "S");
+    const testBoard = new Board(20, 10);
+    const piece = new Piece(2, 3, "S", testBoard);
 
     expect(piece.col).toBe(3);
     expect(piece.row).toBe(2);
@@ -13,7 +14,8 @@ describe("Piece", () => {
   });
 
   it("can move down", () => {
-    const piece = new Piece(2, 3, "S");
+    const testBoard = new Board(20, 10);
+    const piece = new Piece(2, 3, "S", testBoard);
 
     piece.moveDown();
 
@@ -23,9 +25,9 @@ describe("Piece", () => {
 
   it("can check if the piece collide with the board", () => {
     const testBoard = new Board(20, 10);
-    const fixedPiece = new Piece(4, 4, "T");
+    const fixedPiece = new Piece(4, 4, "T", testBoard);
 
-    const piece1 = new Piece(2, 3, "O");
+    const piece1 = new Piece(2, 3, "O", testBoard);
 
     testBoard.fixPiece(fixedPiece);
 
@@ -37,9 +39,9 @@ describe("Piece", () => {
     |         T T T       |
     |                     |
     */
-    expect(piece1.checkCollision(testBoard)).toBe(false);
+    expect(piece1.checkCollision()).toBe(false);
 
-    const piece2 = new Piece(4, 3, "O");
+    const piece2 = new Piece(4, 3, "O", testBoard);
 
     /*
     |                     |
@@ -47,14 +49,14 @@ describe("Piece", () => {
     |       O × T T       |
     |                     |
     */
-    expect(piece2.checkCollision(testBoard)).toBe(true);
+    expect(piece2.checkCollision()).toBe(true);
   });
 
   it("can move left", () => {
     const testBoard = new Board(20, 10);
-    const piece = new Piece(2, 3, "S");
+    const piece = new Piece(2, 3, "S", testBoard);
 
-    piece.moveLeftIfCan(testBoard);
+    piece.moveLeftIfCan();
 
     expect(piece.col).toBe(2);
     expect(piece.row).toBe(2);
@@ -63,9 +65,9 @@ describe("Piece", () => {
   it("doesn't move left if it's at the left edge", () => {
     const testBoard = new Board(20, 10);
 
-    const piece = new Piece(2, 0, "S");
+    const piece = new Piece(2, 0, "S", testBoard);
 
-    piece.moveLeftIfCan(testBoard);
+    piece.moveLeftIfCan();
 
     expect(piece.col).toBe(0);
     expect(piece.row).toBe(2);
@@ -73,11 +75,11 @@ describe("Piece", () => {
 
   it("doesn't move left if it collides with the board", () => {
     const testBoard = new Board(20, 10);
-    const fixedPiece = new Piece(1, 1, "T");
+    const fixedPiece = new Piece(1, 1, "T", testBoard);
 
     testBoard.fixPiece(fixedPiece);
 
-    const piece = new Piece(1, 4, "O");
+    const piece = new Piece(1, 4, "O", testBoard);
 
     /*
     |                     |
@@ -87,7 +89,7 @@ describe("Piece", () => {
     
     */
 
-    piece.moveLeftIfCan(testBoard);
+    piece.moveLeftIfCan();
 
     expect(piece.row).toBe(1);
     expect(piece.col).toBe(4);
@@ -95,9 +97,9 @@ describe("Piece", () => {
 
   it("can move right", () => {
     const testBoard = new Board(20, 10);
-    const piece = new Piece(2, 3, "S");
+    const piece = new Piece(2, 3, "S", testBoard);
 
-    piece.moveRightIfCan(testBoard);
+    piece.moveRightIfCan();
 
     expect(piece.col).toBe(4);
     expect(piece.row).toBe(2);
@@ -105,9 +107,9 @@ describe("Piece", () => {
 
   it("doesn't move right if it's at the right edge", () => {
     const testBoard = new Board(20, 10);
-    const piece = new Piece(2, 8, "S");
+    const piece = new Piece(2, 8, "S", testBoard);
 
-    piece.moveRightIfCan(testBoard);
+    piece.moveRightIfCan();
 
     expect(piece.col).toBe(8);
     expect(piece.row).toBe(2);
@@ -115,11 +117,11 @@ describe("Piece", () => {
 
   it("doesn't move right if it collides with the board", () => {
     const testBoard = new Board(20, 10);
-    const fixedPiece = new Piece(1, 4, "O");
+    const fixedPiece = new Piece(1, 4, "O", testBoard);
 
     testBoard.fixPiece(fixedPiece);
 
-    const piece = new Piece(1, 1, "T");
+    const piece = new Piece(1, 1, "T", testBoard);
 
     /*
     |                     |
@@ -129,7 +131,7 @@ describe("Piece", () => {
     
     */
 
-    piece.moveRightIfCan(testBoard);
+    piece.moveRightIfCan();
 
     expect(piece.row).toBe(1);
     expect(piece.col).toBe(1);
@@ -137,9 +139,9 @@ describe("Piece", () => {
 
   it("can rotate", () => {
     const testBoard = new Board(20, 10);
-    const piece = new Piece(2, 3, "S");
+    const piece = new Piece(2, 3, "S", testBoard);
 
-    piece.rotateIfCan(testBoard);
+    piece.rotateIfCan();
 
     expect(piece.shape).toEqual(
       rotateMatrix(SHAPES.S as unknown as number[][]),
@@ -148,13 +150,13 @@ describe("Piece", () => {
 
   it("if it collides with a fixed piece, it doesn't rotate", () => {
     const testBoard = new Board(20, 10);
-    const fixedPiece = new Piece(2, 2, "T");
+    const fixedPiece = new Piece(2, 2, "T", testBoard);
 
     testBoard.fixPiece(fixedPiece);
 
-    const piece = new Piece(1, 3, "Z");
+    const piece = new Piece(1, 3, "Z", testBoard);
 
-    piece.rotateIfCan(testBoard);
+    piece.rotateIfCan();
 
     /*
     |                     |          |                     |
@@ -169,11 +171,11 @@ describe("Piece", () => {
 
   it("can rotate even if it collides with the right or left wall, it moves right or left respectively", () => {
     const testBoard = new Board(20, 10);
-    const piece = new Piece(1, 6, "I");
+    const piece = new Piece(1, 6, "I", testBoard);
 
     // Prepare the board
-    piece.rotateIfCan(testBoard);
-    piece.moveRightIfCan(testBoard);
+    piece.rotateIfCan();
+    piece.moveRightIfCan();
 
     /*
     |                     |          |                     |               |                     |
@@ -184,7 +186,7 @@ describe("Piece", () => {
     |                     |          |                     |               |                     |
     */
 
-    piece.rotateIfCan(testBoard);
+    piece.rotateIfCan();
 
     expect(piece.col).toBe(6);
     expect(piece.shape).toEqual(

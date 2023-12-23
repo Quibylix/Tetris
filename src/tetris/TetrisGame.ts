@@ -30,7 +30,7 @@ export class TetrisGame {
     this.ctx = canvas.getContext("2d");
 
     this.board = new Board(TETRIS_VERTICAL_BLOCKS, TETRIS_HORIZONTAL_BLOCKS);
-    this.piece = new Piece(0, 4, getRandomPieceName());
+    this.piece = new Piece(0, 4, getRandomPieceName(), this.board);
 
     this.movementInterval = new AnimationInterval(
       this.handlePieceMovement,
@@ -64,21 +64,21 @@ export class TetrisGame {
       switch (event.key) {
         case "ArrowLeft":
           this.isMovingLeft = true;
-          this.piece.moveLeftIfCan(this.board);
+          this.piece.moveLeftIfCan();
           this.movementInterval.reset();
           break;
         case "ArrowRight":
           this.isMovingRight = true;
-          this.piece.moveRightIfCan(this.board);
+          this.piece.moveRightIfCan();
           this.movementInterval.reset();
           break;
         case "ArrowDown":
           this.isMovingDown = true;
-          this.piece.canMoveDown(this.board) && this.piece.moveDown();
+          this.piece.canMoveDown() && this.piece.moveDown();
           this.movementInterval.reset();
           break;
         case "ArrowUp":
-          this.piece.rotateIfCan(this.board);
+          this.piece.rotateIfCan();
           break;
       }
     });
@@ -131,7 +131,7 @@ export class TetrisGame {
   }
 
   handleGravity() {
-    if (this.piece.canMoveDown(this.board)) {
+    if (this.piece.canMoveDown()) {
       this.piece.moveDown();
       return;
     }
@@ -142,9 +142,9 @@ export class TetrisGame {
     const newLevel = getLevel(this.fullRowsCount);
     if (newLevel !== this.level) this.updateLevel(newLevel);
 
-    this.piece = new Piece(0, 4, getRandomPieceName());
+    this.piece = new Piece(0, 4, getRandomPieceName(), this.board);
 
-    if (this.piece.checkCollision(this.board)) {
+    if (this.piece.checkCollision()) {
       this.gameOver();
     }
   }
@@ -162,15 +162,15 @@ export class TetrisGame {
 
   handlePieceMovement() {
     if (this.isMovingLeft) {
-      this.piece.moveLeftIfCan(this.board);
+      this.piece.moveLeftIfCan();
     }
 
     if (this.isMovingRight) {
-      this.piece.moveRightIfCan(this.board);
+      this.piece.moveRightIfCan();
     }
 
     if (this.isMovingDown) {
-      this.piece.canMoveDown(this.board) && this.piece.moveDown();
+      this.piece.canMoveDown() && this.piece.moveDown();
     }
   }
 

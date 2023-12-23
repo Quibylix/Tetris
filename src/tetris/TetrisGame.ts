@@ -34,7 +34,7 @@ export class TetrisGame {
 
     this.movementInterval = new AnimationInterval(
       this.handlePieceMovement,
-      110,
+      150,
     );
     this.gravityInterval = new AnimationInterval(this.handleGravity, 470);
   }
@@ -172,7 +172,7 @@ export class TetrisGame {
       470 * Math.pow(0.88, 2 * level - 1),
     );
     this.movementInterval.interval = Math.floor(
-      110 * Math.pow(0.96, 2 * level - 1),
+      150 * Math.pow(0.97, 2 * level - 1),
     );
   }
 

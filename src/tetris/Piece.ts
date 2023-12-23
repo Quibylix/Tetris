@@ -97,6 +97,10 @@ export class Piece {
     return finalRow;
   }
 
+  moveDownToFinalRow() {
+    this.row = this.getFinalRow();
+  }
+
   checkCollision() {
     return this.shape.some((row, rowIndex) => {
       return row.some((value, colIndex) => {

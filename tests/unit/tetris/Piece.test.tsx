@@ -206,5 +206,9 @@ describe("Piece", () => {
     testBoard.fixPiece(fixedPiece);
 
     expect(piece.getFinalRow()).toEqual(16);
+
+    piece.moveDownToFinalRow();
+
+    expect(piece.row).toEqual(16);
   });
 });

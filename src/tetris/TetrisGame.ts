@@ -80,6 +80,22 @@ export class TetrisGame {
         case "ArrowUp":
           this.piece.rotateIfCan();
           break;
+        case " ": {
+          this.piece.moveDownToFinalRow();
+          this.board.fixPiece(this.piece);
+          this.fullRowsCount += this.board.removeFullRows();
+
+          const newLevel = getLevel(this.fullRowsCount);
+          if (newLevel !== this.level) this.updateLevel(newLevel);
+
+          this.piece = new Piece(0, 4, getRandomPieceName(), this.board);
+
+          if (this.piece.checkCollision()) {
+            this.gameOver();
+          }
+
+          break;
+        }
       }
     });
   }

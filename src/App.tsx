@@ -1,10 +1,13 @@
 import "./App.css";
-import { Game } from "./components";
+import { Game, Navbar } from "./components";
 
 export default function App() {
   return (
-    <main>
-      <Game />
-    </main>
+    <>
+      <Navbar />
+      <main>
+        <Game />
+      </main>
+    </>
   );
 }

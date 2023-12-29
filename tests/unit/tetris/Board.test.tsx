@@ -19,7 +19,7 @@ describe("Board", () => {
 
   it("can fix a piece to the board storing the piece's color", () => {
     const board = new Board(20, 10);
-    const piece = new Piece(10, 0, "S");
+    const piece = new Piece(10, 0, "S", board);
 
     board.fixPiece(piece);
 
@@ -31,8 +31,8 @@ describe("Board", () => {
 
   it("throws an error if the piece is out of bounds", () => {
     const board = new Board(20, 10);
-    const piece = new Piece(20, 0, "S");
-    const piece2 = new Piece(-1, 10, "S");
+    const piece = new Piece(20, 0, "S", board);
+    const piece2 = new Piece(-1, 10, "S", board);
 
     expect(() => board.fixPiece(piece)).toThrow();
     expect(() => board.fixPiece(piece2)).toThrow();
@@ -42,7 +42,7 @@ describe("Board", () => {
     const board = new Board(20, 10);
 
     for (let i = 0; i < 5; i++) {
-      board.fixPiece(new Piece(18, 2 * i, "O"));
+      board.fixPiece(new Piece(18, 2 * i, "O", board));
     }
 
     /*

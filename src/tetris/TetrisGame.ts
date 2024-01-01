@@ -7,6 +7,16 @@ import {
 } from "./constants";
 import { getLevel, getRandomPieceName } from "./helpers";
 
+const korobeinikiAudio = new Audio("/audio/korobeiniki.mp3");
+const lineClearAudio = new Audio("/audio/line-clear.mp3");
+const rotateAudio = new Audio("/audio/rotate.mp3");
+const moveAudio = new Audio("/audio/move.mp3");
+const hardDropAudio = new Audio("/audio/hard-drop.mp3");
+const levelUpAudio = new Audio("/audio/level-up.mp3");
+const blockoutAudio = new Audio("/audio/blockout.mp3");
+
+korobeinikiAudio.loop = true;
+
 export class TetrisGame {
   canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D | null;
@@ -42,6 +52,8 @@ export class TetrisGame {
   run() {
     requestAnimationFrame(this.main);
 
+    korobeinikiAudio.play();
+
     this.setupKeydownControls();
     this.setupKeyupControls();
   }
@@ -66,24 +78,42 @@ export class TetrisGame {
           this.isMovingLeft = true;
           this.piece.moveLeftIfCan();
           this.movementInterval.reset();
+          moveAudio.currentTime = 0;
+          moveAudio.play();
           break;
         case "ArrowRight":
           this.isMovingRight = true;
           this.piece.moveRightIfCan();
           this.movementInterval.reset();
+          moveAudio.currentTime = 0;
+          moveAudio.play();
           break;
         case "ArrowDown":
           this.isMovingDown = true;
           this.piece.canMoveDown() && this.piece.moveDown();
           this.movementInterval.reset();
+          moveAudio.currentTime = 0;
+          moveAudio.play();
           break;
         case "ArrowUp":
           this.piece.rotateIfCan();
+          rotateAudio.currentTime = 0;
+          rotateAudio.play();
           break;
         case " ": {
           this.piece.moveDownToFinalRow();
+          hardDropAudio.currentTime = 0;
+          hardDropAudio.play();
+
           this.board.fixPiece(this.piece);
-          this.fullRowsCount += this.board.removeFullRows();
+
+          const fullRowsCount = this.board.removeFullRows();
+
+          if (fullRowsCount > 0) {
+            lineClearAudio.currentTime = 0;
+            lineClearAudio.play();
+            this.fullRowsCount += fullRowsCount;
+          }
 
           const newLevel = getLevel(this.fullRowsCount);
           if (newLevel !== this.level) this.updateLevel(newLevel);
@@ -153,7 +183,14 @@ export class TetrisGame {
     }
 
     this.board.fixPiece(this.piece);
-    this.fullRowsCount += this.board.removeFullRows();
+
+    const fullRowsCount = this.board.removeFullRows();
+
+    if (fullRowsCount > 0) {
+      lineClearAudio.currentTime = 0;
+      lineClearAudio.play();
+      this.fullRowsCount += fullRowsCount;
+    }
 
     const newLevel = getLevel(this.fullRowsCount);
     if (newLevel !== this.level) this.updateLevel(newLevel);
@@ -167,6 +204,8 @@ export class TetrisGame {
 
   updateLevel(level: number) {
     this.level = level;
+    levelUpAudio.currentTime = 0;
+    levelUpAudio.play();
 
     this.gravityInterval.interval = Math.floor(
       470 * Math.pow(0.88, 2 * level - 1),
@@ -195,5 +234,8 @@ export class TetrisGame {
 
     this.gravityInterval.reset();
     this.movementInterval.reset();
+
+    korobeinikiAudio.pause();
+    blockoutAudio.play();
   }
 }
